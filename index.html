@@ -354,7 +354,7 @@
         <input id="h_fim" placeholder="dd/mm/aaaa hh:mm" autocomplete="off">
 
         <label for="tempo">TEMPO IMPACTO:</label>
-        <input id="tempo" placeholder="hh:mm:ss" autocomplete="off">
+        <input id="tempo" placeholder="hh:mm" autocomplete="off" inputmode="numeric" maxlength="5">
 
         <label for="sintoma">SINTOMA:</label>
         <select id="sintoma"></select>
@@ -483,10 +483,9 @@ function agoraBR() {
 }
 
 function formatarTempo(valor) {
-    const n = valor.replace(/\D/g, "").slice(0, 6);
+    const n = valor.replace(/\D/g, "").slice(0, 4);
     if (n.length <= 2) return n;
-    if (n.length <= 4) return n.slice(0, 2) + ":" + n.slice(2);
-    return n.slice(0, 2) + ":" + n.slice(2, 4) + ":" + n.slice(4);
+    return n.slice(0, 2) + ":" + n.slice(2);
 }
 
 function formatarDataHora(valor) {
@@ -583,7 +582,7 @@ function gerarFechamento() {
     }
 
     const regexData = /^\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}$/;
-    const regexTempo = /^\d{2}:\d{2}:\d{2}$/;
+    const regexTempo = /^\d{2}:\d{2}$/;
 
     if (!regexData.test(dados.h_ini)) {
         mostrarMensagem("Horário Inicial deve estar no formato dd/mm/aaaa hh:mm", "erro");
@@ -596,14 +595,14 @@ function gerarFechamento() {
         return;
     }
     if (!regexTempo.test(dados.tempo)) {
-        mostrarMensagem("Tempo Impacto deve estar no formato hh:mm:ss", "erro");
+        mostrarMensagem("Tempo Impacto deve estar no formato hh:mm", "erro");
         document.getElementById("tempo").focus();
         return;
     }
 
-    const [hh, mm, ss] = dados.tempo.split(":").map(Number);
-    if (mm > 59 || ss > 59) {
-        mostrarMensagem("Minutos e segundos devem estar entre 00 e 59", "erro");
+    const [hh, mm] = dados.tempo.split(":").map(Number);
+    if (mm > 59) {
+        mostrarMensagem("Minutos devem estar entre 00 e 59", "erro");
         document.getElementById("tempo").focus();
         return;
     }
