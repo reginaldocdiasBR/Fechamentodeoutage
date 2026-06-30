@@ -2,9 +2,8 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fechamento de Outage - Gestão de Tickets</title>
+<title>Fechamento de Outage</title>
 <style>
 
     :root {
@@ -541,12 +540,6 @@
 </style>
 </head>
 <body>
-<!--
-    Arquivo preparado para publicação no GitHub Pages.
-    Use este arquivo com o nome index.html na raiz do repositório.
-    CSS, JavaScript, imagens e dados necessários estão incorporados no próprio HTML.
--->
-
 <div class="topo-claro" aria-hidden="true">
     <svg class="topo-claro-svg" viewBox="0 0 800 124" preserveAspectRatio="none" focusable="false">
         <path fill="#C91D29" d="M0,0H800V61 C610,104 338,127 0,123Z"></path>
@@ -6208,8 +6201,12 @@ function gerarPlanilha() {
         return;
     }
     const fechamentoSelecionado = valor("fechamento");
-    const opcoes = SOLUCOES_POR_FECHAMENTO[fechamentoSelecionado] || [];
-    const solucaoFinal = opcoes.length ? valor("solucao") : INFO_FIXA["Solução"];
+    // CORREÇÃO: a planilha deve usar a mesma origem de soluções do tipo selecionado
+    // (NEWMONITOR ou SGO). Antes estava fixo em SOLUCOES_POR_FECHAMENTO,
+    // fazendo a exportação do SGO cair como "AUTOMÁTICO" mesmo quando a caixa de texto
+    // já mostrava a solução selecionada corretamente.
+    const opcoes = obterSolucoesPorFechamentoAtual()[fechamentoSelecionado] || [];
+    const solucaoFinal = opcoes.length ? valor("solucao") : (valor("solucao") || INFO_FIXA["Solução"]);
     const linhas = [
         ["TICKET", valor("ticket")],
         ["HORARIO INICIAL", valor("h_ini")],
